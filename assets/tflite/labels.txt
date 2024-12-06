@@ -1,0 +1,5 @@
+Bacterial_spot
+healthy 
+Bacterial spot 
+Early blight 
+healthy
