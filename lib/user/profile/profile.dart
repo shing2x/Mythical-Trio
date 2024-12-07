@@ -7,7 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tf_app/profile/profile_controller.dart';
+import 'package:tf_app/user/onboarding_login/auth_screen/auth_service.dart';
+import 'package:tf_app/user/profile/profile_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,6 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _controller = Get.put(ProfileController());
+  final _auth = Get.put(AuthService());
   final isEdit = false.obs;
   String? base64Image;
   Uint8List? _imageBytes;
@@ -48,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   const Spacer(),
                   GestureDetector(
-                    onTap: _controller.signOut,
+                    onTap: _auth.signOut,
                     child: const Icon(Icons.logout, color: Colors.black),
                   ),
                 ],

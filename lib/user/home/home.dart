@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tf_app/crops/crop.dart';
-import 'package:tf_app/crops/crop_controller.dart';
-import 'package:tf_app/profile/profile_controller.dart';
+import 'package:tf_app/user/crops/crop.dart';
+import 'package:tf_app/user/crops/crop_controller.dart';
+import 'package:tf_app/user/profile/profile_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

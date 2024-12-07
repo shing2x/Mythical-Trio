@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tf_app/home/bottom_navigation.dart';
-import 'package:tf_app/onboarding_login/auth_screen/auth_service.dart';
-import 'package:tf_app/onboarding_login/auth_screen/signup.dart';
+import 'package:tf_app/user/home/bottom_navigation.dart';
+import 'package:tf_app/user/onboarding_login/auth_screen/auth_service.dart';
+import 'package:tf_app/user/onboarding_login/auth_screen/signup.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

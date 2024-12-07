@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tf_app/home/home.dart';
-import 'package:tf_app/photo/photo_page.dart';
-import 'package:tf_app/profile/profile.dart';
+import 'package:tf_app/user/home/home.dart';
+import 'package:tf_app/user/photo/photo_page.dart';
+import 'package:tf_app/user/profile/profile.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});

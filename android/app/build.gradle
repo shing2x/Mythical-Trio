@@ -25,8 +25,13 @@ if (flutterVersionName == null) {
 }
 
 android {
+    aaptOptions {
+        noCompress 'tflite'
+        noCompress 'lite'
+    }
     namespace "com.example.tf_app"
     compileSdkVersion flutter.compileSdkVersion
+    // compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -50,6 +55,7 @@ android {
         // minSdkVersion flutter.minSdkVersion
         minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
+        // targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

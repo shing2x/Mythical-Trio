@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tf_app/crops/crop_controller.dart';
+import 'package:tf_app/user/crops/crop_controller.dart';
 
 class PlantDiseasePage extends StatefulWidget {
   Uint8List imageBytes;

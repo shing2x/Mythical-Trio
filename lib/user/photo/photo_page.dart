@@ -8,8 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'dart:developer' as devtools;
 
-import 'package:tf_app/gemini/ai_service.dart';
-import 'package:tf_app/home/bottom_navigation.dart';
+import 'package:tf_app/user/gemini/ai_service.dart';
+import 'package:tf_app/user/home/bottom_navigation.dart';
 
 class PhotoPage extends StatefulWidget {
   String plantName;

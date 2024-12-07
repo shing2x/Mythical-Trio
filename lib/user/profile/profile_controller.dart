@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:tf_app/onboarding_login/auth_screen/signin.dart';
+import 'package:tf_app/user/onboarding_login/auth_screen/signin.dart';
 
 class ProfileController extends GetxController {
   final _firestore = FirebaseFirestore.instance;
@@ -33,11 +33,5 @@ class ProfileController extends GetxController {
     await _firestore.collection('users').doc(currentUser!.uid).set({
       'base64image': base64image,
     }, SetOptions(merge: true));
-  }
-
-  Future<void> signOut() async {
-    await _auth.signOut();
-    Get.offAll(() => const LoginPage());
-    Get.snackbar('Success', 'Signed out Successfully');
   }
 }

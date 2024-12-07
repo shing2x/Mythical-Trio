@@ -48,7 +48,7 @@ class AiService extends GetxController {
 
     // The prompt requesting the AI to return treatment and cause for Pechay's bacterial spot disease
     final prompt = '''
-      Can you give the treatment and the cause for this plant $label. Disease is $disease then respond in JSON format.
+      Please provide the cause and treatment for the following plant disease: $label with disease $disease. Format the information in JSON as shown below, replacing placeholders with the correct details. If any information seems wrong or needs clarification, feel free to correct it. The data should include the plant name, disease name, its cause, and treatments.Don't include **
       
     {
         "user_id": ${currentUser!.uid},
@@ -56,7 +56,7 @@ class AiService extends GetxController {
         "name": xxxx,
         "diseases": [
           {
-            "name": xxxxxx",
+            "name": xxxxxx,
             "cause": xxxxxx,
             "treatment": [
               xxxxxxxx,
