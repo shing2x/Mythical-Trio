@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tf_app/crops/crop.dart';
 import 'package:tf_app/home/home.dart';
 import 'package:tf_app/onboarding_login/page1.dart';
 import 'package:tf_app/onboarding_login/page2.dart';

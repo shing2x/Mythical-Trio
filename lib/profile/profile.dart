@@ -1,7 +1,35 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 
-class ProfilePage extends StatelessWidget {
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tf_app/profile/profile_controller.dart';
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _controller = Get.put(ProfileController());
+  final isEdit = false.obs;
+  String? base64Image;
+  Uint8List? _imageBytes;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +46,9 @@ class ProfilePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/');
-                    },
+                    onTap: _controller.signOut,
                     child: const Icon(Icons.logout, color: Colors.black),
                   ),
                 ],
@@ -51,71 +77,90 @@ class ProfilePage extends StatelessWidget {
               // Profile Avatar with Edit Icon
               Stack(
                 children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: AssetImage(
-                        'assets/images/2.jpg'), // Replace with your avatar image
-                  ),
+                  Obx(() {
+                    _controller.fetchUserInfo();
+                    try {
+                      Uint8List? _imageBytess =
+                          base64Decode(_controller.userInfo['base64image']);
+                      return ClipOval(
+                        child: Image.memory(
+                          _imageBytess,
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                          gaplessPlayback: true,
+                        ),
+                      );
+                    } catch (e) {
+                      return ClipOval(
+                          child: Image.asset(
+                        'assets/images/2.jpg',
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                      ));
+                    }
+                  }),
                   Positioned(
                     bottom: 0,
                     right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        border: Border.all(
-                          color: const Color.fromARGB(255, 15, 129, 19),
-                          width: 1,
+                    child: GestureDetector(
+                      onTap: pickImageAndProcess,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 15, 129, 19),
+                            width: 1,
+                          ),
                         ),
+                        padding: const EdgeInsets.all(6),
+                        child: const Icon(Icons.edit,
+                            color: Color.fromARGB(255, 15, 129, 19), size: 16),
                       ),
-                      padding: const EdgeInsets.all(6),
-                      child: const Icon(Icons.edit,
-                          color: Color.fromARGB(255, 15, 129, 19), size: 16),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 30),
-
-              // Name Field
-              buildInputField("Jemy Reighn"),
+              Obx(() => buildInputField('Full Name', _nameController,
+                  enable: isEdit.value)),
               const SizedBox(height: 16),
-
-              // Email Field
-              buildInputField("gmail@example.com"),
+              buildInputField('Email', _emailController),
               const SizedBox(height: 16),
-
-              // Password Field
-              buildInputField("********", isObscure: true),
-              const SizedBox(height: 32),
 
               // Save Button
               GestureDetector(
-                onTap: () {
-                  // Save action
+                onTap: () async {
+                  isEdit.value = !isEdit.value;
+                  if (!isEdit.value) {
+                    await _controller.editName(_nameController.text);
+                  }
                 },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: const Color.fromARGB(255, 15, 129, 19),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Save",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                child: Obx(() => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: isEdit.value
+                              ? const Color.fromARGB(255, 9, 46, 94)
+                              : const Color.fromARGB(255, 15, 129, 19),
+                        ),
+                        child: Center(
+                          child: Text(
+                            isEdit.value ? 'Done' : "Edit",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
+                    )),
               ),
             ],
           ),
@@ -125,32 +170,101 @@ class ProfilePage extends StatelessWidget {
   }
 
   // Reusable Input Field Widget
-  Widget buildInputField(String hint, {bool isObscure = false}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color.fromARGB(255, 15, 129, 19),
-          width: 2,
+  Widget buildInputField(String label, TextEditingController controller,
+      {bool enable = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+              color: Color.fromARGB(255, 15, 129, 19),
+              fontWeight: FontWeight.bold),
         ),
-      ),
-      child: TextFormField(
-        cursorColor: Colors.black,
-        obscureText: isObscure,
-        style: const TextStyle(
-          color: Colors.black,
-        ),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(
-            color: Colors.black,
+        const SizedBox(height: 5),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color.fromARGB(255, 15, 129, 19),
+              width: 2,
+            ),
           ),
-          border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          child: TextFormField(
+            enabled: enable,
+            controller: controller,
+            cursorColor: Colors.black,
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+            decoration: const InputDecoration(
+              hintStyle: TextStyle(
+                color: Colors.black,
+              ),
+              border: InputBorder.none,
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            ),
+          ),
         ),
-      ),
+      ],
     );
+  }
+
+  Future<void> initProfile() async {
+    await _controller.fetchUserInfo();
+    setState(() {
+      _nameController.text = _controller.userInfo['fullname'];
+      _emailController.text = _controller.userInfo['email'];
+    });
+  }
+
+  Future<void> pickImageAndProcess() async {
+    final ImagePicker picker = ImagePicker();
+
+    try {
+      // Pick an image from gallery
+      final XFile? pickedFile =
+          await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        // Check if the platform is Web
+        if (kIsWeb) {
+          // Web: Use 'readAsBytes' to process the picked image
+          final Uint8List webImageBytes = await pickedFile.readAsBytes();
+
+          setState(() {
+            _imageBytes = webImageBytes;
+            base64Image =
+                base64Encode(webImageBytes); // Store base64 image if needed
+          });
+
+          log("Image selected on Web: ${webImageBytes.lengthInBytes} bytes");
+        } else {
+          // Native (Android/iOS): Use File to get image bytes
+          final File nativeImageFile = File(pickedFile.path);
+
+          // Ensure that the file exists
+          if (await nativeImageFile.exists()) {
+            final Uint8List nativeImageBytes =
+                await nativeImageFile.readAsBytes();
+
+            setState(() {
+              _imageBytes = nativeImageBytes;
+              base64Image = base64Encode(nativeImageBytes);
+            });
+            await _controller.storeImage(base64Image!);
+            log("Image selected on Native: ${nativeImageFile.path}");
+          } else {
+            log("File does not exist: ${pickedFile.path}");
+          }
+        }
+      } else {
+        log("No image selected.");
+      }
+    } catch (e) {
+      log("Error picking image: $e");
+    }
   }
 }

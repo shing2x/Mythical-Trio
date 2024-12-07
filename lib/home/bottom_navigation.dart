@@ -34,12 +34,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   onPressed: () {
                     Get.to(() => PhotoPage(
                           plantName: plantName.text,
-                        )); 
+                        ));
                   },
                   child: const Text('Confirm')),
               ElevatedButton(
-                  onPressed: () => Get.back(closeOverlays: true),
-                  child: const Text('Cancel')),
+                  onPressed: () => Get.back(), child: const Text('Cancel')),
             ],
           ));
         },
@@ -69,5 +68,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    plantName.clear();
   }
 }

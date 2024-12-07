@@ -126,7 +126,7 @@ class _PhotoPageState extends State<PhotoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Plant Dresses Detection"),
+        title: const Text("Plant Disease Detection"),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -233,7 +233,7 @@ class _PhotoPageState extends State<PhotoPage> {
                   "Pick from gallery",
                 ),
               ),
-              SizedBox(height: 100),
+              const SizedBox(height: 100),
               ElevatedButton(
                 onPressed: () async {
                   String base64 = await convertImageToBase64(filetPath!);

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tf_app/crops/crop.dart';
 import 'package:tf_app/crops/crop_controller.dart';
+import 'package:tf_app/profile/profile_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage>
   late AnimationController _controller;
   late Animation<Offset> _animation;
   final _cropController = Get.put(CropController());
+  final _profileController = Get.put(ProfileController());
 
   @override
   void initState() {
@@ -59,26 +61,45 @@ class _HomePageState extends State<HomePage>
                 ),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: AssetImage(
-                        'assets/images/2.jpg',
-                      ), // Replace with your avatar image
-                    ),
+                    Obx(() {
+                      _profileController.fetchUserInfo();
+                      final data = _profileController.userInfo;
+                      try {
+                        Uint8List imageBytes0 =
+                            base64Decode(data['base64image']);
+                        return ClipOval(
+                            child: Image.memory(
+                          imageBytes0,
+                          height: 70,
+                          width: 70,
+                          gaplessPlayback: true,
+                          fit: BoxFit.cover,
+                        ));
+                      } catch (e) {
+                        return ClipOval(
+                            child: Image.asset(
+                          'assets/images/2.jpg',
+                          height: 70,
+                          width: 70,
+                          gaplessPlayback: true,
+                          fit: BoxFit.cover,
+                        ));
+                      }
+                    }),
                     const SizedBox(width: 15),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            const Text(
-                              "Hi Sajon! ",
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                            Obx(
+                              () =>
+                                  Text(_profileController.userInfo['fullname'],
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      )),
                             ),
                             SlideTransition(
                               position: _animation,

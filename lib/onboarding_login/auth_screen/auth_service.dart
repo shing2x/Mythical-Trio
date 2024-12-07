@@ -12,8 +12,8 @@ class AuthService extends GetxController {
   // Register method
   Future<String> registerUser(
     String email,
+    String fullname,
     String password,
-    String username,
   ) async {
     try {
       UserCredential userCredential =
@@ -23,8 +23,7 @@ class AuthService extends GetxController {
       );
       await _firestore.collection('users').doc(user!.uid).set({
         'email': email,
-        'username': username,
-        'password': password,
+        'fullname': fullname,
         'created_at': DateTime.now(),
       });
 
@@ -44,9 +43,17 @@ class AuthService extends GetxController {
   }
 
   // Sign-in method with email and password
+// Sign-in method with email and password
   Future<String> signInWithEmailPassword(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      User? user = userCredential.user;
+
+      // Check if the email is verified
+      if (user != null && !user.emailVerified) {
+        return 'Please verify your email before logging in.';
+      }
 
       return 'Sign in successful!';
     } on FirebaseAuthException catch (e) {

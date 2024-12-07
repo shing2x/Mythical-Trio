@@ -18,61 +18,44 @@ class _PlantDiseasePageState extends State<PlantDiseasePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initPlant();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final List<Map<String, dynamic>> plants = [
-    //   {
-    //     "name": _controller.plantDetails,
-    //     "diseases": [
-    //       {
-    //         "image": "assets/images/p1a.png",
-    //         "name": "Downy Mildew (Amag na Mabaho)",
-    //         "cause": "Prolonged wet and cool weather, poor air circulation.",
-    //         "treatment": [
-    //           "Mix 3 parts milk to 10 parts water and spray weekly.",
-    //           "Dissolve 1 tablespoon of baking soda into 1 liter of water, mix, and spray weekly."
-    //         ],
-    //       },
-    //     ]
-    //   },
-    // ];
-
     return Scaffold(
-      body: Column(
-        children: [
-          // Header Section
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 20,
-              left: 20,
-              right: 20,
+      body: SingleChildScrollView(
+        // Wrapping the entire body in SingleChildScrollView
+        child: Column(
+          children: [
+            // Header Section
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Back Button
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(Icons.arrow_back, color: Colors.black),
+                  ),
+                  // Logo
+                  Image.asset(
+                    "assets/images/3.png", // Replace with your logo path
+                    height: 60,
+                  ),
+                ],
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Back Button
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.arrow_back, color: Colors.black),
-                ),
-                // Logo
-                Image.asset(
-                  "assets/images/3.png", // Replace with your logo path
-                  height: 60,
-                ),
-              ],
-            ),
-          ),
-          // Disease List Section
-          Expanded(
-            child: Obx(() {
+            // Disease List Section
+            Obx(() {
               _controller.fetchPlantDet(id: widget.docId);
               final plant = _controller.plantDet;
               return Padding(
@@ -88,13 +71,44 @@ class _PlantDiseasePageState extends State<PlantDiseasePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Plant Name
-                        Text(
-                          plant['name'],
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              plant['name'],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  Get.dialog(AlertDialog(
+                                    title: Text('Delete'),
+                                    content: Text(
+                                        'Are you sure you want to delete ?'),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () async {
+                                            await _controller
+                                                .deletePlant(plant['id']);
+                                            Get.back(closeOverlays: true);
+                                            Get.snackbar('Success',
+                                                'Plant deleted successfully!');
+                                          },
+                                          child: Text('Yes')),
+                                      ElevatedButton(
+                                          onPressed: () => Get.back(),
+                                          child: Text('No'))
+                                    ],
+                                  ));
+                                },
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                )),
+                          ],
                         ),
                         const SizedBox(height: 10),
                         // Diseases List
@@ -162,8 +176,8 @@ class _PlantDiseasePageState extends State<PlantDiseasePage> {
                 ),
               );
             }),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

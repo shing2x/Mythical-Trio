@@ -18,7 +18,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   // Controllers for text inputs
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _username = TextEditingController();
+  final TextEditingController _fullname = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
@@ -87,8 +87,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildTextField("Username",
-                hintText: "Your name", controller: _username),
+            _buildTextField("Full Name",
+                hintText: "Full Name", controller: _fullname),
             const SizedBox(height: 10),
             _buildTextField("Email",
                 hintText: "example@email.com", controller: _emailController),
@@ -251,18 +251,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     return GestureDetector(
       onTap: () async {
         if (_isAgreed) {
-          String email = _emailController.text.trim();
-          String password = _passwordController.text.trim();
-          String username = _passwordController.text.trim();
-          String result =
-              await _authService.registerUser(email, password, username);
-          if (result.contains('successful')) {
-            Get.snackbar('Success', 'Verification email sent!');
-            Navigator.pushNamed(context, '/signin');
+          if (_confirmPasswordController.text == _passwordController.text) {
+            String result = await _authService.registerUser(
+                _emailController.text,
+                _fullname.text,
+                _confirmPasswordController.text);
+
+            if (result.contains('successful')) {
+              Get.snackbar('Success', 'Verification email sent!');
+              Navigator.pushNamed(context, '/signin');
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(result)),
+              );
+            }
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(result)),
-            );
+            Get.snackbar('Error', 'Contfirm password must be the same');
           }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -302,15 +306,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             content: const Text(
               "By creating an account, you agree to the collection, processing, and storage of your personal data as outlined in the Data Privacy Act of 2012. "
               "The following rights are provided to safeguard your privacy:\n\n"
-              "1. **The Right to Be Informed**\n"
+              "1. The Right to Be Informed\n"
               "You have the right to be informed about the collection, processing, and storage of your personal data. This includes the purpose of data collection, the types of personal data being collected, the recipients or categories of recipients who may have access to your data, and the period for which your data will be stored. Consent will be obtained when necessary.\n\n"
-              "2. **The Right to Access**\n"
+              "2. The Right to Access\n"
               "You have the right to obtain a copy of your personal data held by the organization, along with additional details about how it is being used or processed. Organizations must respond to these requests within 30 days and provide information in a clear and understandable format.\n\n"
-              "3. **The Right to Object**\n"
+              "3. The Right to Object\n"
               "You can object to the processing of your personal data if it is based on consent or legitimate business interest.\n\n"
-              "4. **The Right to Erasure or Blocking**\n"
+              "4. The Right to Erasure or Blocking\n"
               "You have the right to withdraw or request the removal of your personal data when your rights are violated.\n\n"
-              "5. **The Right to Damages**\n"
+              "5. The Right to Damages\n"
               "You can claim compensation for damages caused by unlawfully obtained or unauthorized use of your personal data.\n\n"
               "The Data Privacy Act ensures compliance with international data protection standards."
               "\n\nFor more details, please read our full privacy policy.",

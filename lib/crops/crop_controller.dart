@@ -1,8 +1,6 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
 class CropController extends GetxController {
@@ -12,8 +10,10 @@ class CropController extends GetxController {
 
   RxList<Map<String, dynamic>> plantDetails = <Map<String, dynamic>>[].obs;
   Future<void> fetchPlantDetails() async {
-    QuerySnapshot querySnapshot =
-        await _firestore.collection('plant').where(currentUser!.uid).get();
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('plant')
+        .where('user_id', isEqualTo: currentUser!.uid)
+        .get();
     plantDetails.value = querySnapshot.docs
         .map((doc) => {
               'id': doc['id'],
@@ -54,5 +54,9 @@ class CropController extends GetxController {
     } catch (e) {
       log('Errroe $e');
     }
+  }
+
+  Future<void> deletePlant(String id) async {
+    await _firestore.collection('plant').doc(id).delete();
   }
 }

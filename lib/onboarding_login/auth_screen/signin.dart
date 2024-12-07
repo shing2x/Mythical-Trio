@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // Username Field
                   const Text(
-                    "Username",
+                    "Email",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.black,
