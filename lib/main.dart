@@ -25,6 +25,7 @@ void main() async {
           measurementId: "G-QY8KBFTJJJ"));
 
   runApp(kIsWeb ? ActivityLogApp() : const MyApp());
+  // debugPaintSizeEnabled = true;
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'cropcure',
+      title: 'Crop Cure',
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
@@ -57,6 +58,7 @@ class ActivityLogApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      title: 'Crop Cure',
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
