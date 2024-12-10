@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                     cursorColor: const Color.fromARGB(255, 15, 129, 19),
                     style: const TextStyle(color: Colors.black),
                     decoration: InputDecoration(
-                      hintText: "Your Email",
+                      hintText: "",
                       hintStyle: const TextStyle(color: Colors.black),
                       fillColor: Colors.white,
                       filled: true,
@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                     cursorColor: const Color.fromARGB(255, 15, 129, 19),
                     style: const TextStyle(color: Colors.black),
                     decoration: InputDecoration(
-                      hintText: "Your Password",
+                      hintText: "",
                       hintStyle: const TextStyle(color: Colors.black),
                       fillColor: Colors.white,
                       filled: true,
@@ -229,9 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             }
 
-                            setState(() {
-                              _isLoading = false;
-                            });
+                            _isLoading = false;
                           },
                     child: Container(
                       width: double.infinity,

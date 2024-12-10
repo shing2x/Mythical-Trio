@@ -24,6 +24,7 @@ class _PhotoPageState extends State<PhotoPage> {
   File? filetPath;
   String label = "";
   double confidence = 0.0;
+  final isClick = false.obs;
 
   Future<void> _tfLteInit() async {
     String? res = await Tflite.loadModel(
@@ -234,26 +235,34 @@ class _PhotoPageState extends State<PhotoPage> {
                 ),
               ),
               const SizedBox(height: 100),
-              ElevatedButton(
-                onPressed: () async {
-                  String base64 = await convertImageToBase64(filetPath!);
-                  if (filetPath != null) {
-                    await _response.response(
-                        label: widget.plantName, disease: label, image: base64);
-                    Get.to(() => BottomNavigation());
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13),
+              label.isEmpty
+                  ? SizedBox.shrink()
+                  : ElevatedButton(
+                      onPressed: () async {
+                        String base64 = await convertImageToBase64(filetPath!);
+                        if (filetPath != null) {
+                          isClick.value = true;
+                          await _response.response(
+                              label: widget.plantName,
+                              disease: label,
+                              image: base64);
+
+                          Get.offAll(() => BottomNavigation());
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13),
+                          ),
+                          foregroundColor: Colors.black),
+                      child: Obx(() => isClick.value
+                          ? Text('Submitting...')
+                          : Text(
+                              "Submit to Continue...",
+                            )),
                     ),
-                    foregroundColor: Colors.black),
-                child: const Text(
-                  "Submit to Continue...",
-                ),
-              ),
             ],
           ),
         ),

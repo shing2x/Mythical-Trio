@@ -20,25 +20,7 @@ class CropController extends GetxController {
               'user_id': doc['user_id'],
               'name': doc['name'],
               'diseases': doc['diseases'],
-              'image': doc['image'],
-            })
-        .toList();
-  }
-
-  RxList<Map<String, dynamic>> plantDetailss = <Map<String, dynamic>>[].obs;
-  Future<void> fetchPlantDetailss(String id) async {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('plant')
-        .where(currentUser!.uid)
-        .where('id', isEqualTo: id)
-        .get();
-    plantDetails.value = querySnapshot.docs
-        .map((doc) => {
-              'id': doc['id'],
-              'user_id': doc['user_id'],
-              'name': doc['name'],
-              'diseases': doc['diseases'],
-              'image': doc['image'],
+              'image': doc['image']!,
             })
         .toList();
   }

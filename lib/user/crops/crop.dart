@@ -75,7 +75,7 @@ class _PlantDiseasePageState extends State<PlantDiseasePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              plant['name'],
+                              plant['name'] ?? 'Null',
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -133,17 +133,24 @@ class _PlantDiseasePageState extends State<PlantDiseasePage> {
                               Text(
                                 disease['name'],
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Color.fromARGB(255, 15, 129, 19),
                                 ),
                               ),
                               const SizedBox(height: 5),
+                              Text(
+                                "Cause:",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
                               // Disease Cause
                               Text(
-                                "Cause: ${disease['cause']}",
+                                "${disease['cause'].replaceAll('*', '')}",
                                 style: const TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   color: Colors.black,
                                 ),
                               ),
@@ -152,16 +159,16 @@ class _PlantDiseasePageState extends State<PlantDiseasePage> {
                               const Text(
                                 "Treatment:",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
                               ),
                               ...disease['treatment'].map<Widget>((treatment) {
                                 return Text(
-                                  "- $treatment",
+                                  "- ${treatment.replaceAll('*', '')}",
                                   style: const TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 16,
                                     color: Colors.black,
                                   ),
                                 );

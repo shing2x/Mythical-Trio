@@ -94,7 +94,8 @@ class _HomePageState extends State<HomePage>
                             children: [
                               Obx(
                                 () => Text(
-                                  _profileController.userInfo['fullname'],
+                                  _profileController.userInfo['fullname'] ??
+                                      'Not set',
                                   style: const TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
@@ -145,11 +146,11 @@ class _HomePageState extends State<HomePage>
                     itemCount: _cropController.plantDetails.length,
                     itemBuilder: (context, index) {
                       final plant = _cropController.plantDetails[index];
-                      Uint8List imageBytes = base64Decode(plant['image']);
+
                       return GestureDetector(
                         onTap: () => Get.to(() => PlantDiseasePage(
                               docId: plant['id'],
-                              imageBytes: imageBytes,
+                              imageBytes: base64Decode(plant['image']),
                             )),
                         child: Card(
                           color: Colors.black,
@@ -165,9 +166,9 @@ class _HomePageState extends State<HomePage>
                                 Expanded(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: imageBytes != null
+                                    child: plant['image'] != null
                                         ? Image.memory(
-                                            imageBytes,
+                                            base64Decode(plant['image']),
                                             height: 100,
                                             fit: BoxFit.cover,
                                             gaplessPlayback: true,
